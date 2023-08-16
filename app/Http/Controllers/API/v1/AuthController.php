@@ -7,12 +7,11 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\V1\LoginUserRequest;
 use App\Models\User;
 use App\Traits\HttpResponses;
-use Laravel\Sanctum\HasApiTokens;
-use Laravel\Sanctum\Sanctum;
+
 use Symfony\Component\HttpFoundation\Request;
 use Laravel\Sanctum\PersonalAccessToken;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Storage;
+
 
 class AuthController extends Controller
 {
@@ -57,5 +56,16 @@ class AuthController extends Controller
         $user = $accessToken->tokenable; /* gives the user by its token */
 
         return response()->json(['success' => 'valid token'], 200);
+    }
+    public function Logout(Request $request)
+    {
+        if (auth::check()) {
+            $user = Auth::user();
+            if ($user->tokens()->where('tokenable_id', $user->id)->exists()) {
+                $user->tokens()->delete();
+            }
+            return response()->json(['success', 'user is logged out'], 200);
+        }
+        return response()->json(['error', 'user tokens invalid'], 400);
     }
 }

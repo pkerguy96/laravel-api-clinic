@@ -27,6 +27,7 @@ route::group(['prefix' => 'v1', 'namespace' => 'App\Http\Controllers\API\v1'], f
 });
 route::group(['prefix' => 'v1', 'namespace' => 'App\Http\Controllers\API\v1', 'middleware' => 'auth:sanctum'], function () {
     Route::get('Admin/profile', [AdminController::class, 'getpicture']);
+    Route::post('Admin/logout', [AuthController::class, 'Logout']);
     Route::post('Admin/store/profile', [AdminController::class, 'storeprofile']);
     Route::post('Admin/update/profile', [AdminController::class, 'ModifyProfile']);
 
