@@ -31,7 +31,7 @@ class StorePatientRequest extends FormRequest
                 'required',
                 'date',
                 'before_or_equal:today', // Ensures it's not in the future
-                'after_or_equal:' . now()->startOfYear(), // Allows dates within the current year
+
             ],
             'address' => ['required'],
             'sex' => ['required', Rule::in(['male', 'female'])],
