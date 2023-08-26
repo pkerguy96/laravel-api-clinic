@@ -27,7 +27,12 @@ class StorePatientRequest extends FormRequest
             'nom' => ['required'],
             'prenom' => ['required'],
             'cin' => ['required'],
-            'date' => ['required', 'date'],
+            'date' => [
+                'required',
+                'date',
+                'before_or_equal:today', // Ensures it's not in the future
+                'after_or_equal:' . now()->startOfYear(), // Allows dates within the current year
+            ],
             'address' => ['required'],
             'sex' => ['required', Rule::in(['male', 'female'])],
             'phone_number' => ['required', 'numeric'],

@@ -15,11 +15,11 @@ return new class extends Migration
             $table->id();
             $table->string('nom');
             $table->string('prenom');
-            $table->string('cin');
+            $table->string('cin')->unique();;
             $table->date('date');
             $table->text('address');
             $table->enum('sex', ['male', 'female']);
-            $table->string('phone_number', 20);
+            $table->string('phone_number', 20)->unique();;
             $table->string('mutuelle');
             $table->timestamps();
         });
