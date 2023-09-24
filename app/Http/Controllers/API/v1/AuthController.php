@@ -57,7 +57,7 @@ class AuthController extends Controller
 
         return response()->json(['success' => 'valid token'], 200);
     }
-    public function Logout(Request $request)
+    public function Logout()
     {
         if (auth::check()) {
             $user = Auth::user();

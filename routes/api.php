@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\API\v1\AdminController;
 use App\Http\Controllers\API\v1\AuthController;
+use App\Http\Controllers\API\v1\NurseController;
 use App\Http\Controllers\API\v1\PatientController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -27,9 +28,10 @@ route::group(['prefix' => 'v1', 'namespace' => 'App\Http\Controllers\API\v1'], f
 });
 route::group(['prefix' => 'v1', 'namespace' => 'App\Http\Controllers\API\v1', 'middleware' => 'auth:sanctum'], function () {
     Route::get('Admin/profile', [AdminController::class, 'getpicture']);
-    Route::post('Admin/logout', [AuthController::class, 'Logout']);
+    Route::get('Admin/logout', [AuthController::class, 'Logout']);
     Route::post('Admin/store/profile', [AdminController::class, 'storeprofile']);
     Route::post('Admin/update/profile', [AdminController::class, 'ModifyProfile']);
 
     route::apiResource('Patient', PatientController::class);
+    Route::apiResource('Nurse', NurseController::class);
 });

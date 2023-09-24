@@ -3,20 +3,23 @@
 namespace App\Http\Controllers\API\v1;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\V1\StoreNurseRequest;
+use App\Http\Resources\V1\NurseCollection;
+use App\Http\Resources\V1\NurseResource;
+use App\Models\Nurse;
 use Illuminate\Http\Request;
-use App\Models\Patient;
-use App\Http\Requests\V1\StorePatientRequest;
-use App\Http\Resources\V1\PatientResource;
-use App\Http\Resources\V1\PatientCollection;
 
-class PatientController extends Controller
+use Illuminate\Support\Facades\DB;
+
+class NurseController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        return new PatientCollection(Patient::orderBy('id', 'desc')->get());
+
+        return new NurseCollection(Nurse::orderby('id', 'desc')->get());
     }
 
     /**
@@ -30,21 +33,27 @@ class PatientController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StorePatientRequest $request)
+    public function store(StoreNurseRequest $request)
     {
+        $authenticatedUserId = auth()->user();
+        $attributes = $request->all();
+        $attributes['doctor_id'] = $authenticatedUserId->id;
         try {
+            if ($authenticatedUserId->nurses()->count() >= 6) {
+                return response()->json(['message' => "Vous ne pouvez avoir que jusqu'à six infirmières."], 400);
+            }
             // Attempt to create a new patient based on the validated request data
-            $data = new PatientResource(Patient::create($request->all()));
+            $data = new NurseResource(Nurse::create($attributes));
 
             // If the patient is successfully created, return a success response
             return response()->json([
-                'message' => 'Patient created successfully',
+                'message' => 'Nurse created successfully',
                 'data' => $data
             ], 201); // 201 Created status code for successful resource creation
         } catch (\Exception $e) {
-            // If there's an error while creating the patient, return an error response
+            // If there's an error while creating the Nurse, return an error response
             return response()->json([
-                'message' => 'Failed to create patient',
+                'message' => 'Failed to create Nurse',
                 'error' => $e->getMessage(),
             ], 500); // 500 Internal Server Error status code for server-side errors
         }
@@ -55,7 +64,7 @@ class PatientController extends Controller
      */
     public function show(string $id)
     {
-        return  new PatientResource(Patient::where('id', $id)->first());
+        //
     }
 
     /**
