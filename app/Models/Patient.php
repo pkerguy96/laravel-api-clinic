@@ -18,4 +18,8 @@ class Patient extends Model
         'phone_number',
         'mutuelle',
     ];
+    public function appointments()
+    {
+        return $this->hasMany(Appointment::class, 'patient_id');
+    }
 }

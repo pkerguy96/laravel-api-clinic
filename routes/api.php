@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\API\v1\AdminController;
+use App\Http\Controllers\API\v1\AppointmentController;
 use App\Http\Controllers\API\v1\AuthController;
 use App\Http\Controllers\API\v1\NurseController;
 use App\Http\Controllers\API\v1\PatientController;
@@ -34,4 +35,5 @@ route::group(['prefix' => 'v1', 'namespace' => 'App\Http\Controllers\API\v1', 'm
 
     route::apiResource('Patient', PatientController::class);
     Route::apiResource('Nurse', NurseController::class);
+    Route::apiResource('Appointment', AppointmentController::class);
 });
