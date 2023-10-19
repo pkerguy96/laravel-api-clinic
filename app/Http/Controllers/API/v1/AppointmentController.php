@@ -7,6 +7,7 @@ use App\Http\Requests\V1\AppointmentRequest;
 use App\Http\Resources\V1\AppointmentResource;
 use App\Models\Appointment;
 use Illuminate\Http\Request;
+use App\Http\Resources\V1\AppointmentCollection;
 
 class AppointmentController extends Controller
 {
@@ -15,7 +16,7 @@ class AppointmentController extends Controller
      */
     public function index()
     {
-        // 
+        return new AppointmentCollection(Appointment::orderby('id', 'desc')->get());
     }
 
     /**
@@ -34,7 +35,7 @@ class AppointmentController extends Controller
         $authenticatedUserId = auth()->user();
         $attributes = $request->all();
         $attributes['doctor_id'] = $authenticatedUserId->id;
-        $attributes['patient_id'] = 5;
+
         $data = new AppointmentResource(Appointment::create($attributes));
 
         // If the patient is successfully created, return a success response
@@ -73,6 +74,15 @@ class AppointmentController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $appointment = Appointment::find($id);
+
+        if (!$appointment) {
+            return response()->json(['message' => 'Appointment not found'], 404);
+        }
+
+        // Delete the appointment
+        $appointment->delete();
+
+        return response()->json(['message' => 'Appointment deleted'], 204);
     }
 }
