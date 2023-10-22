@@ -29,4 +29,14 @@ class AppointmentRequest extends FormRequest
             'note' => 'nullable|string|max:255',
         ];
     }
+    public function messages()
+    {
+        return [
+            'patient_id.required' => 'Le nom de patient est requis.',
+            'title.required' => 'Le titre est requis.',
+            'date.required' => 'La date de naissance est requise.',
+            'date.date' => 'La date de naissance doit être une date valide.',
+
+        ];
+    }
 }

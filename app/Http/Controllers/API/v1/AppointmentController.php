@@ -32,6 +32,13 @@ class AppointmentController extends Controller
      */
     public function store(AppointmentRequest $request)
     {
+        $appointment_date = $request->input('date');
+        $existingAppointment = Appointment::where('date', $appointment_date)->first();
+        if ($existingAppointment) {
+            return response()->json([
+                'message' => 'Un rendez-vous existe déjà à cette date et heure.',
+            ], 422); // Return an appropriate HTTP status code (Unprocessable Entity) for validation error
+        }
         $authenticatedUserId = auth()->user();
         $attributes = $request->all();
         $attributes['doctor_id'] = $authenticatedUserId->id;
