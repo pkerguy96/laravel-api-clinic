@@ -16,7 +16,7 @@ class PatientController extends Controller
      */
     public function index()
     {
-        return new PatientCollection(Patient::orderBy('id', 'desc')->get());
+        return new PatientCollection(Patient::with('appointments')->orderBy('id', 'desc')->get());
     }
 
     /**
