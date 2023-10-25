@@ -17,6 +17,7 @@ class Patient extends Model
         'sex',
         'phone_number',
         'mutuelle',
+        'note',
     ];
     public function appointments()
     {

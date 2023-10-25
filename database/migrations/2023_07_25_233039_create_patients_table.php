@@ -15,12 +15,13 @@ return new class extends Migration
             $table->id();
             $table->string('nom');
             $table->string('prenom');
-            $table->string('cin')->unique();;
+            $table->string('cin')->unique();
             $table->date('date');
             $table->text('address');
             $table->enum('sex', ['male', 'female']);
-            $table->string('phone_number', 20)->unique();;
+            $table->string('phone_number', 20)->unique();
             $table->string('mutuelle');
+            $table->text('note')->nullable();
             $table->timestamps();
         });
     }

@@ -26,6 +26,7 @@ class PatientCollection extends ResourceCollection
                 'sex' => $patient->sex,
                 'phoneNumber' => $patient->phone_number,
                 'mutuelle' => $patient->mutuelle,
+                'note' => $patient->note,
                 'appointments' => CustomAppointmentResource::collection($patient->appointments),
             ];
         });
