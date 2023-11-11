@@ -33,13 +33,13 @@ class OrdonanceRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'patient_id.required' => 'Le champ "patient_id" est requis.',
+            'patient_id.required' => 'Le champ "patient" est requis.',
             'patient_id.integer' => 'Le champ "patient_id" doit être un entier.',
             'patient_id.exists' => 'Le "patient_id" spécifié n\'existe pas.',
             'date.required' => 'Le champ "date" est requis.',
             'date.date' => 'Le champ "date" doit être une date valide.',
-            'medicine.*.medicine_name.required' => 'Le champ "medicine_name" est requis.',
-            'medicine.*.medicine_name.string' => 'Le champ "medicine_name" doit être une chaîne de caractères.',
+            'medicine.*.medicine_name.required' => 'Le champ "medicine" est requis.',
+            'medicine.*.medicine_name.string' => 'Le champ "medicine" doit être une chaîne de caractères.',
             'medicine.*.note.string' => 'Le champ "note" doit être une chaîne de caractères.',
         ];
     }

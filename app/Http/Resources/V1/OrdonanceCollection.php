@@ -19,8 +19,12 @@ class OrdonanceCollection extends ResourceCollection
                 'id' => $ordonance->id,
                 'doctor_id' => $ordonance->doctor_id,
                 'patient_id' => $ordonance->patient_id,
+                'date' => $ordonance->date,
                 'ordonance_details' => OrdonanceDetailsResource::collection($ordonance->whenLoaded('OrdonanceDetails')),
-
+                'patient' => [
+                    'nom' => $ordonance->patient->nom,
+                    'prenom' => $ordonance->patient->prenom,
+                ],
             ];
         });
     }

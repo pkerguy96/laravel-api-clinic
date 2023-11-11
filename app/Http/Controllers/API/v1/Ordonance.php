@@ -19,7 +19,7 @@ class Ordonance extends Controller
      */
     public function index()
     {
-        $ordonances = ModelsOrdonance::with('OrdonanceDetails')->orderBy('id', 'desc')->get();
+        $ordonances = ModelsOrdonance::with('OrdonanceDetails', 'Patient')->orderBy('id', 'desc')->get();
 
         return new OrdonanceCollection($ordonances);
     }
