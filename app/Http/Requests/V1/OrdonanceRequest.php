@@ -31,7 +31,7 @@ class OrdonanceRequest extends FormRequest
         ];
     }
     public function messages(): array
-    {
+    { 
         return [
             'patient_id.required' => 'Le champ "patient" est requis.',
             'patient_id.integer' => 'Le champ "patient_id" doit être un entier.',

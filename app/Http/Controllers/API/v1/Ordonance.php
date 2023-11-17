@@ -11,6 +11,7 @@ use App\Models\OrdonanceDetails;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use PhpParser\Node\Stmt\TryCatch;
 
 class Ordonance extends Controller
 {
@@ -19,6 +20,7 @@ class Ordonance extends Controller
      */
     public function index()
     {
+
         $ordonances = ModelsOrdonance::with('OrdonanceDetails', 'Patient')->orderBy('id', 'desc')->get();
 
         return new OrdonanceCollection($ordonances);
@@ -75,7 +77,10 @@ class Ordonance extends Controller
             DB::rollBack();
 
             // Return an error response
-            return response()->json(['message' => 'Error creating Ordonance'], 500);
+            return response()->json([
+                'message' => 'Error creating Ordonance',
+
+            ], 500);
         }
     }
 
@@ -98,9 +103,57 @@ class Ordonance extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(OrdonanceRequest $request, string $id)
     {
-        //
+        try {
+            // Find the Ordonance record by ID
+            $ordonance = ModelsOrdonance::findOrFail($id);
+
+            $user = Auth::user();
+            // Start a database transaction
+            DB::beginTransaction();
+
+            // Update the Ordonance record with the new data
+            $ordonance->update([
+                'doctor_id' => $user->id,
+                'patient_id' => $request->input('patient_id'),
+                'date' => $request->input('date'),
+                // Add any other fields you want to update
+            ]);
+
+            // Validate and update OrdonanceDetails records
+            $medicineArray = $request->medicine;
+
+            // Delete existing OrdonanceDetails records
+            $ordonance->OrdonanceDetails()->delete();
+
+            // Create new OrdonanceDetails records
+            foreach ($medicineArray as $medicine) {
+                $ordonance->OrdonanceDetails()->create([
+                    'ordonance_id' => $ordonance->id,
+                    'medicine_name' => $medicine['medicine_name'],
+                    'note' => $medicine['note'],
+                ]);
+            }
+
+
+            DB::commit();
+
+
+            $data = new OrdonanceResource(ModelsOrdonance::with('OrdonanceDetails')->find($ordonance->id));
+
+
+            return response()->json([
+                'message' => 'Ordonance updated successfully',
+                'data' => $data,
+            ], 200);
+        } catch (\Exception $e) {
+            // Rollback the transaction in case of an error
+            DB::rollBack();
+
+            // Return an error response
+            return response()->json(['message' => 'Error updating Ordonance', 'wtf' => $e], 500);
+        }
     }
 
     /**

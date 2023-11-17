@@ -18,7 +18,9 @@ class OrdonanceResource extends JsonResource
             'id' => $this->id,
             'doctor_id' => $this->doctor_id,
             'patient_id' => $this->patient_id,
-            'ordonance_details' => OrdonanceDetailsResource::collection($this->whenLoaded('OrdonanceDetails')),
+            /*   'ordonance_details' => OrdonanceDetailsResource::collection($this->whenLoaded('OrdonanceDetails')), */
+            'ordonance_details' => OrdonanceDetailsResource::collection($this->ordonanceDetails),
+
         ];
     }
 }

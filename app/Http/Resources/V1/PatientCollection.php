@@ -28,6 +28,7 @@ class PatientCollection extends ResourceCollection
                 'mutuelle' => $patient->mutuelle,
                 'note' => $patient->note,
                 'appointments' => CustomAppointmentResource::collection($patient->appointments),
+                'ordonances' => OrdonanceResource::collection($patient->Ordonance)
             ];
         });
     }
