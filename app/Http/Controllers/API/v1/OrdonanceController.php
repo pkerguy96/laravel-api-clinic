@@ -3,18 +3,21 @@
 namespace App\Http\Controllers\API\v1;
 
 use App\Http\Controllers\Controller;
+
 use App\Http\Requests\V1\OrdonanceRequest;
 use App\Http\Resources\V1\OrdonanceCollection;
 use App\Http\Resources\V1\OrdonanceResource;
 use App\Models\Ordonance as ModelsOrdonance;
 use App\Models\OrdonanceDetails;
+use App\Traits\HttpResponses;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use PhpParser\Node\Stmt\TryCatch;
 
-class Ordonance extends Controller
+class OrdonanceController extends Controller
 {
+    use HttpResponses;
     /**
      * Display a listing of the resource.
      */
@@ -37,9 +40,8 @@ class Ordonance extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(OrdonanceRequest $request)
+    public function store(Request $request)
     {
-
         try {
 
             $medicineArray = $request->medicine;
@@ -89,7 +91,7 @@ class Ordonance extends Controller
      */
     public function show(string $id)
     {
-        return new OrdonanceResource(ModelsOrdonance::with('OrdonanceDetails')->where('id', $id)->first());
+        //
     }
 
     /**
@@ -103,7 +105,7 @@ class Ordonance extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(OrdonanceRequest $request, string $id)
+    public function update(Request $request, string $id)
     {
         try {
             // Find the Ordonance record by ID
@@ -135,14 +137,8 @@ class Ordonance extends Controller
                     'note' => $medicine['note'],
                 ]);
             }
-
-
             DB::commit();
-
-
             $data = new OrdonanceResource(ModelsOrdonance::with('OrdonanceDetails')->find($ordonance->id));
-
-
             return response()->json([
                 'message' => 'Ordonance updated successfully',
                 'data' => $data,
@@ -152,7 +148,7 @@ class Ordonance extends Controller
             DB::rollBack();
 
             // Return an error response
-            return response()->json(['message' => 'Error updating Ordonance', 'wtf' => $e], 500);
+            return response()->json(['message' => 'Error updating Ordonance'], 500);
         }
     }
 
@@ -161,6 +157,16 @@ class Ordonance extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        try {
+            $ordonance = ModelsOrdonance::findorfail($id);
+
+            if ($ordonance) {
+                $ordonance->OrdonanceDetails()->delete();
+                $ordonance->delete();
+                return $this->success(null, 'Ordonance deleted successfuly', 200);
+            }
+        } catch (\Exception $e) {
+            return $this->success(null, 'oops there is an error:' . $e->getMessage(), 500);
+        }
     }
 }

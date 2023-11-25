@@ -4,7 +4,8 @@ use App\Http\Controllers\API\v1\AdminController;
 use App\Http\Controllers\API\v1\AppointmentController;
 use App\Http\Controllers\API\v1\AuthController;
 use App\Http\Controllers\API\v1\NurseController;
-use App\Http\Controllers\API\v1\Ordonance;
+use App\Http\Controllers\API\v1\OperationController;
+use App\Http\Controllers\API\v1\OrdonanceController;
 use App\Http\Controllers\API\v1\PatientController;
 use App\Http\Controllers\API\v1\StockController;
 use Illuminate\Http\Request;
@@ -39,5 +40,6 @@ route::group(['prefix' => 'v1', 'namespace' => 'App\Http\Controllers\API\v1', 'm
     Route::apiResource('Nurse', NurseController::class);
     Route::apiResource('Appointment', AppointmentController::class);
     Route::apiResource('Stock', StockController::class);
-    Route::apiResource('Ordonance', Ordonance::class);
+    Route::apiResource('Ordonance', OrdonanceController::class);
+    Route::apiResource('Operation', OperationController::class);
 });
