@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
             $table->integer('doctor_id');
             $table->integer('patient_id');
-            $table->integer('tooth_id');
+            $table->string('tooth_id');
             $table->string('operation_type');
             $table->text('note')->nullable();
             $table->timestamps();

@@ -11,8 +11,9 @@ class Operation extends Model
     protected $guarded = [];
     public function payments()
     {
-        return $this->hasMany(Payement::class);
+        return $this->hasMany(Payement::class, 'operation_id');
     }
+
     public function doctor()
     {
         return $this->belongsTo(User::class, 'doctor_id');

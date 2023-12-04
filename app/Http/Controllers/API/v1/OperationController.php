@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API\v1;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\V1\OperationCollection;
 use App\Models\Operation;
 use App\Models\Payement;
 use Illuminate\Http\Request;
@@ -16,7 +17,8 @@ class OperationController extends Controller
      */
     public function index()
     {
-        //
+        $operations = Operation::with('payments')->orderBy('id', 'desc')->get();
+        return new OperationCollection($operations);
     }
 
     /**
@@ -35,33 +37,45 @@ class OperationController extends Controller
         try {
             $user = Auth::user();
             DB::beginTransaction();
+
+
             $operation = Operation::create([
                 'doctor_id' => $user->id,
                 'patient_id' => $request->input('patient_id'),
-                'tooth_id' => $request->input('tooth_id'),
+                'tooth_id' => implode(',', $request->input('tooth_id')),
                 'operation_type' => $request->input('operation_type'),
                 'note' => $request->input('note'),
 
 
             ]);
-            Payement::create([
-                'operation_id' => $operation->id,
-                'total_cost' => $request->input('total_cost'),
-                'amount_paid' => $request->input('amount_paid'),
-                'is_paid' => $request->input('is_paid'),
+            if ($request->is_paid) {
+                Payement::create([
+                    'operation_id' => $operation->id,
+                    'total_cost' => $request->input('total_cost'),
+                    'amount_paid' => $request->input('total_cost'),
+                    'is_paid' => $request->input('is_paid'),
 
-            ]);
+                ]);
+            } else {
+                Payement::create([
+                    'operation_id' => $operation->id,
+                    'total_cost' => $request->input('total_cost'),
+                    'amount_paid' => $request->input('amount_paid'),
+                    'is_paid' => $request->input('is_paid'),
+
+                ]);
+            }
             DB::commit();
             return response()->json([
                 'message' => 'operation created successfully',
 
             ], 201);
-        } catch (\Throwable $th) {
+        } catch (\Exception $e) {
             //throw $th;
             DB::rollBack();
             return response()->json([
-                'message' => 'chi blan hada',
-                'msg' => $th
+                'message' => 'Oops something went wrong',
+                'msg' => $e->getMessage()
             ], 404);
         }
     }
