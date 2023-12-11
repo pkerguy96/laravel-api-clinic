@@ -18,12 +18,13 @@ class Operation extends Model
     {
         return $this->belongsTo(User::class, 'doctor_id');
     }
+
     public function patient()
     {
         return $this->belongsTo(Patient::class, 'patient_id');
     }
     public function operationDetails()
     {
-        return $this->belongsTo(operationDetails::class, 'operation_id');
+        return $this->hasMany(OperationDetail::class, 'operation_id');
     }
 }

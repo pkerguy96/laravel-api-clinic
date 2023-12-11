@@ -8,6 +8,7 @@ use App\Models\Patient;
 use App\Http\Requests\V1\StorePatientRequest;
 use App\Http\Resources\V1\PatientResource;
 use App\Http\Resources\V1\PatientCollection;
+use App\Http\Resources\V1\PatientDetailResource;
 
 class PatientController extends Controller
 {
@@ -56,6 +57,10 @@ class PatientController extends Controller
     public function show(string $id)
     {
         return  new PatientResource(Patient::where('id', $id)->first());
+    }
+    public function patientDetails(string $id)
+    {
+        return  new PatientDetailResource(Patient::with('appointments', 'operations')->where('id', $id)->first());
     }
 
     /**

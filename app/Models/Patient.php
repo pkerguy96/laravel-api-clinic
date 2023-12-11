@@ -27,4 +27,8 @@ class Patient extends Model
     {
         return $this->hasMany(Ordonance::class, 'patient_id');
     }
+    public function operations()
+    {
+        return $this->hasMany(Operation::class, 'patient_id'); // Assuming 'patient_id' is the foreign key in the operations table
+    }
 }
