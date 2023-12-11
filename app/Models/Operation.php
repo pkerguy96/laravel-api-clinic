@@ -22,4 +22,8 @@ class Operation extends Model
     {
         return $this->belongsTo(Patient::class, 'patient_id');
     }
+    public function operationDetails()
+    {
+        return $this->belongsTo(operationDetails::class, 'operation_id');
+    }
 }
