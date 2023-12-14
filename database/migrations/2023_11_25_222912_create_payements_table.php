@@ -18,7 +18,6 @@ return new class extends Migration
             $table->unsignedBigInteger('operation_id');
             $table->decimal('total_cost', 10, 2);
             $table->decimal('amount_paid', 10, 2)->nullable();
-            $table->boolean('is_paid');
             $table->foreign('operation_id')->references('id')->on('operations')->onDelete('cascade');
 
 

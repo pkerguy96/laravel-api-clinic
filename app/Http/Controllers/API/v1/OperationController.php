@@ -7,6 +7,9 @@ use App\Http\Requests\V1\OperationDetailRequest;
 use App\Http\Requests\V1\OperationRequest;
 use App\Http\Requests\V1\PayementRequest;
 use App\Http\Resources\V1\OperationCollection;
+use App\Http\Resources\V1\OperationDetailResource;
+use App\Http\Resources\V1\OperationResource;
+use App\Http\Resources\V1\PayementResource;
 use App\Models\Operation;
 use App\Models\OperationDetail;
 use App\Models\Payement;
@@ -24,7 +27,7 @@ class OperationController extends Controller
      */
     public function index()
     {
-        $operations = Operation::with('payments')->orderBy('id', 'desc')->get();
+        $operations = Operation::with('payments', 'operationdetails')->orderBy('id', 'desc')->get();
         return new OperationCollection($operations);
     }
 
@@ -101,6 +104,7 @@ class OperationController extends Controller
                 'doctor_id' => $user->id,
                 'patient_id' => $data['patient_id'],
                 'total_cost' => $calculator,
+                'is_paid' => $data['is_paid'],
                 'note' =>  $data['note'],
             ]);
             foreach ($data['operations'] as $item) {
@@ -116,7 +120,7 @@ class OperationController extends Controller
                 'operation_id' =>  $operation->id,
                 'total_cost' => $calculator,
                 'amount_paid' => $data['is_paid'] ? $calculator : $data['amount_paid'],
-                'is_paid' => $data['is_paid'],
+
             ]);
 
             DB::commit();
@@ -167,5 +171,12 @@ class OperationController extends Controller
 
         Operation::findorfail($id)->delete();
         return response()->json(['message' => 'Operation deleted successfully']);
+    }
+    public function getByOperationId($operationId)
+    {
+        $operation = Operation::where('id', $operationId)->get();
+
+        // Transform the result using the resource
+        return OperationResource::collection($operation);
     }
 }

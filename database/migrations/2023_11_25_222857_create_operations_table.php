@@ -18,6 +18,7 @@ return new class extends Migration
             $table->unsignedBigInteger('doctor_id');
             $table->unsignedBigInteger('patient_id');
             $table->decimal('total_cost', 10, 2);
+            $table->boolean('is_paid');
             $table->text('note')->nullable();
             $table->timestamps();
         });

@@ -19,15 +19,18 @@ class OperationCollection extends ResourceCollection
     {
         return $this->collection->map(function ($operation) {
             $totalAmountPaid = $operation->payments->sum('amount_paid');
+            $isPaidValues = $operation->pluck('is_paid')->first();
             return [
+                'isPaid' => $isPaidValues,
                 'id' => $operation->id,
                 'patient_id' => $operation->patient_id,
                 'nom' => $operation->patient->nom,
                 'prenom' => $operation->patient->prenom,
-                'operation_type' => $operation->operation_type,
+                'operation_details' => OperationDetailResource::collection($operation->operationdetails),
                 'date' => Carbon::parse($operation->created_at)->toDateString(),
                 'payments' => PayementResource::collection($operation->payments),
                 'totalPaid' => $totalAmountPaid,
+                'total_cost' => $operation->total_cost
 
             ];
         });

@@ -36,6 +36,7 @@ route::group(['prefix' => 'v1', 'namespace' => 'App\Http\Controllers\API\v1', 'm
     Route::post('Admin/store/profile', [AdminController::class, 'storeprofile']);
     Route::post('Admin/update/profile', [AdminController::class, 'ModifyProfile']);
     Route::get('patientDetails/{id}', [PatientController::class, 'patientDetails']);
+    Route::get('getByOperationId/{id}', [OperationController::class, 'getByOperationId']);
 
     route::apiResource('Patient', PatientController::class);
     Route::apiResource('Nurse', NurseController::class);

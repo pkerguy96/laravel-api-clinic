@@ -23,7 +23,7 @@ class Operation extends Model
     {
         return $this->belongsTo(Patient::class, 'patient_id');
     }
-    public function operationDetails()
+    public function operationdetails()
     {
         return $this->hasMany(OperationDetail::class, 'operation_id');
     }

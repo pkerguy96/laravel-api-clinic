@@ -25,8 +25,6 @@ class PatientResource extends JsonResource
             'phoneNumber' => $this->phone_number,
             'mutuelle' => $this->mutuelle,
             'note' => $this->note,
-
-            // Add other attributes you want to include in the resource
         ];
     }
 }

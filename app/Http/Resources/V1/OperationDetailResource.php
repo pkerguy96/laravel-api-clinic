@@ -2,12 +2,11 @@
 
 namespace App\Http\Resources\V1;
 
-use Carbon\Carbon;
+use App\Models\Payement;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
-use App\Models\OperationDetail;
 
-class PayementResource extends JsonResource
+class OperationDetailResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -16,11 +15,13 @@ class PayementResource extends JsonResource
      */
     public function toArray($request)
     {
+
+
         return [
             'id' => $this->id,
-            'total_cost' => $this->total_cost,
-            'amount_paid' => $this->amount_paid,
-            'date' => $this->created_at->format('Y-m-d H:i:s'),
+            'tooth_id' => $this->tooth_id,
+            'operation_type' => $this->operation_type,
+            'price' => $this->price,
         ];
     }
 }
