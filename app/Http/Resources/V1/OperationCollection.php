@@ -18,18 +18,16 @@ class OperationCollection extends ResourceCollection
     public function toArray($request)
     {
         return $this->collection->map(function ($operation) {
+            $totalAmountPaid = $operation->payments->sum('amount_paid');
             return [
                 'id' => $operation->id,
                 'patient_id' => $operation->patient_id,
-                'tooth_id' => $operation->tooth_id,
+                'nom' => $operation->patient->nom,
+                'prenom' => $operation->patient->prenom,
                 'operation_type' => $operation->operation_type,
-                'note' => $operation->note,
                 'date' => Carbon::parse($operation->created_at)->toDateString(),
                 'payments' => PayementResource::collection($operation->payments),
-                'patient' => [
-                    'nom' => $operation->patient->nom,
-                    'prenom' => $operation->patient->prenom,
-                ],
+                'totalPaid' => $totalAmountPaid,
 
             ];
         });

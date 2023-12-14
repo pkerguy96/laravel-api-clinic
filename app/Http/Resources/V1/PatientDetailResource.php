@@ -49,15 +49,14 @@ class PatientDetailResource extends JsonResource
         return $operations->map(function ($operation) {
             return [
                 'total_cost' => $operation->total_cost,
+                'note' => $operation->note,
+                'date' => $operation->created_at->format('Y-m-d H:i:s'),
                 'operation_type' => $operation->operationDetails->map(function ($operationType) {
                     return [
                         'id' => $operationType->id,
-                        'operation_id' => $operationType->operation_id,
                         'tooth_id' => $operationType->tooth_id,
                         'operation_type' => $operationType->operation_type,
                         'price' => $operationType->price,
-                        'created_at' => $operationType->created_at,
-
                     ];
                 }),
 
