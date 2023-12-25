@@ -4,6 +4,7 @@ namespace App\Http\Resources\V1;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use App\Http\Resources\CustomAppointmentResource;
 
 class PatientResource extends JsonResource
 {
@@ -25,6 +26,8 @@ class PatientResource extends JsonResource
             'phoneNumber' => $this->phone_number,
             'mutuelle' => $this->mutuelle,
             'note' => $this->note,
+            'appointments' => CustomAppointmentResource::collection($this->appointments),
+            'ordonances' => OrdonanceResource::collection($this->Ordonance)
         ];
     }
 }

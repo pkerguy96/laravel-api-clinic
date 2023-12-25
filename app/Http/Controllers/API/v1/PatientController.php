@@ -15,9 +15,10 @@ class PatientController extends Controller
     /**
      * Display a listing of the resource.
      */
+    //TODO: CIN FIX CHECK AGE IF REQUIRED OR NOT 
     public function index()
     {
-        return new PatientCollection(Patient::with('appointments')->orderBy('id', 'desc')->get());
+        return new PatientCollection(Patient::with('appointments', 'Ordonance')->orderBy('id', 'desc')->get());
     }
 
     /**
@@ -68,15 +69,31 @@ class PatientController extends Controller
      */
     public function edit(string $id)
     {
-        //
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(StorePatientRequest $request, string $id)
     {
-        //
+        $patient = Patient::findOrFail($id);
+
+        if (!$patient) {
+            return response()->json([
+                'message' => 'Patient not found.',
+            ], 404);
+        }
+
+        // Validate the updated data
+        $validatedData = $request->validated();
+
+        // Update patient details
+        $patient->update($validatedData);
+
+        return response()->json([
+            'message' => 'Patient updated successfully.',
+            'data' =>  new PatientResource($patient),
+        ], 200);
     }
 
     /**
@@ -84,6 +101,7 @@ class PatientController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        Patient::findorfail($id)->delete();
+        return response()->json(['message' => 'patient deleted successfully'], 204);
     }
 }

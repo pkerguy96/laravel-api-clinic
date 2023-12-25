@@ -21,6 +21,8 @@ return new class extends Migration
             $table->boolean('is_paid');
             $table->text('note')->nullable();
             $table->timestamps();
+            $table->foreign('patient_id')->references('id')->on('patients')->onDelete('cascade');
+            $table->foreign('doctor_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 

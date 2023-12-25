@@ -160,7 +160,41 @@ class OperationController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        try {
+            $operation = Operation::findorfail($id);
+            if ($operation) {
+                $sumAmountPaid = Payement::where('operation_id', $id)->sum('amount_paid');
+                $totalCost = $operation->total_cost;
+                $amountPaid = $request->amount_paid;
+                if (!isset($amountPaid) || empty($amountPaid)) {
+                    return response()->json(['error' => 'Le montant payé est requis'], 400);
+                }
+                if ($amountPaid > $totalCost) {
+                    // The amount paid exceeds the total cost
+                    return response()->json(['error' => "Le montant payé dépasse le coût total."], 400);
+                } elseif ($sumAmountPaid + $amountPaid > $totalCost) {
+                    // The total amount paid after the new payment would exceed the total cost
+                    return response()->json(['error' => "Le montant total payé dépasse le coût total."], 400);
+                } elseif ($sumAmountPaid + $amountPaid <= $totalCost) {
+                    // All paid for
+                    $payement =   Payement::create([
+                        'operation_id' => $operation->id,
+                        'total_cost' => $totalCost,
+                        'amount_paid' => $amountPaid,
+                    ]);
+                    $operation->update(['is_paid' => 1]);
+                    return response()->json([
+                        'message' => "Paiement ajouté avec succès.",
+                        'data' => new PayementResource($payement)
+                    ]);
+                }
+            } else {
+                return response()->json(['message' => "Aucun identifiant d'opération n'existe."]);
+            }
+        } catch (\Exception $e) {
+
+            return response()->json(['message' => 'Error updating Ordonance'], 500);
+        }
     }
 
     /**
@@ -170,13 +204,13 @@ class OperationController extends Controller
     {
 
         Operation::findorfail($id)->delete();
-        return response()->json(['message' => 'Operation deleted successfully']);
+        return response()->json(['message' => 'Operation deleted successfully'], 204);
     }
     public function getByOperationId($operationId)
     {
-        $operation = Operation::where('id', $operationId)->get();
+        $operation = Operation::where('id', $operationId)->first();
 
         // Transform the result using the resource
-        return OperationResource::collection($operation);
+        return new OperationResource($operation);
     }
 }
