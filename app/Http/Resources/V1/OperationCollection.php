@@ -19,9 +19,9 @@ class OperationCollection extends ResourceCollection
     {
         return $this->collection->map(function ($operation) {
             $totalAmountPaid = $operation->payments->sum('amount_paid');
-            $isPaidValues = $operation->pluck('is_paid')->first();
+
             return [
-                'isPaid' => $isPaidValues,
+                'isPaid' => $operation->is_paid,
                 'id' => $operation->id,
                 'patient_id' => $operation->patient_id,
                 'nom' => $operation->patient->nom,

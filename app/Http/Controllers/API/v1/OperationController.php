@@ -176,6 +176,18 @@ class OperationController extends Controller
                     // The total amount paid after the new payment would exceed the total cost
                     return response()->json(['error' => "Le montant total payé dépasse le coût total."], 400);
                 } elseif ($sumAmountPaid + $amountPaid <= $totalCost) {
+
+                    $payement =   Payement::create([
+                        'operation_id' => $operation->id,
+                        'total_cost' => $totalCost,
+                        'amount_paid' => $amountPaid,
+                    ]);
+                    $operation->update(['is_paid' => 0]);
+                    return response()->json([
+                        'message' => "Paiement ajouté avec succès.",
+                        'data' => new PayementResource($payement)
+                    ]);
+                } elseif ($sumAmountPaid + $amountPaid === $totalCost) {
                     // All paid for
                     $payement =   Payement::create([
                         'operation_id' => $operation->id,
@@ -212,5 +224,10 @@ class OperationController extends Controller
 
         // Transform the result using the resource
         return new OperationResource($operation);
+    }
+    public function deletePaymentDetail($id)
+    {
+        Payement::findorfail($id)->delete();
+        return response()->json(['message' => 'payment deleted successfully'], 204);
     }
 }
