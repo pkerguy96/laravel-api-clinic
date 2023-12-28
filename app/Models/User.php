@@ -7,21 +7,19 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable,  HasRoles;
 
     /**
      * The attributes that are mass assignable.
      *
      * @var array<int, string>
      */
-    protected $fillable = [
-        'name',
-        'email',
-        'password',
-    ];
+    protected $guarded = [];
+
 
     /**
      * The attributes that should be hidden for serialization.
@@ -42,10 +40,7 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
-    public function nurses()
-    {
-        return $this->hasMany(Nurse::class, 'doctor_id');
-    }
+
     public function appointments()
     {
         return $this->hasMany(Appointment::class, 'doctor_id');
@@ -54,4 +49,15 @@ class User extends Authenticatable
     {
         return $this->hasMany(Ordonance::class, 'doctor_id');
     }
+    /*  protected static function boot()
+    {
+        parent::boot();
+
+        // Listen for the creating event to assign roles
+        static::creating(function ($user) {
+            if ($user->role === 'doctor') {
+                $user->assignRole('doctor');
+            }
+        });
+    } */
 }

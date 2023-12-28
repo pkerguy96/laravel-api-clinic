@@ -37,6 +37,7 @@ route::group(['prefix' => 'v1', 'namespace' => 'App\Http\Controllers\API\v1', 'm
     Route::post('Admin/update/profile', [AdminController::class, 'ModifyProfile']);
     Route::get('patientDetails/{id}', [PatientController::class, 'patientDetails']);
     Route::get('getByOperationId/{id}', [OperationController::class, 'getByOperationId']);
+
     Route::delete('deletePaymentDetail/{id}', [OperationController::class, 'deletePaymentDetail']);
 
     route::apiResource('Patient', PatientController::class);
@@ -45,4 +46,10 @@ route::group(['prefix' => 'v1', 'namespace' => 'App\Http\Controllers\API\v1', 'm
     Route::apiResource('Stock', StockController::class);
     Route::apiResource('Ordonance', OrdonanceController::class);
     Route::apiResource('Operation', OperationController::class);
+});
+/* Route::post('Patient', [PatientController::class, 'store'])
+    ->middleware(['auth:sanctum', 'role:doctor', 'can:add patient'])
+    ->name('patients.store'); */
+route::group(['prefix' => 'v1', 'namespace' => 'App\Http\Controllers\API\v1', 'middleware' => ['auth:sanctum', 'role:doctor']], function () {
+    Route::delete('deletePaymentDetail/{id}', [OperationController::class, 'deletePaymentDetail']);
 });

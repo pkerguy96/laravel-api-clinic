@@ -13,9 +13,11 @@ use App\Http\Resources\V1\PayementResource;
 use App\Models\Operation;
 use App\Models\OperationDetail;
 use App\Models\Payement;
+use App\Models\Quote;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Validation\ValidationException;
 
 use Illuminate\Support\Facades\Log;
@@ -27,7 +29,8 @@ class OperationController extends Controller
      */
     public function index()
     {
-        $operations = Operation::with('payments', 'operationdetails')->orderBy('id', 'desc')->get();
+        $doctor_id = Auth()->id();
+        $operations = Operation::where('doctor_id', $doctor_id)->with('payments', 'operationdetails')->orderBy('id', 'desc')->get();
         return new OperationCollection($operations);
     }
 
@@ -161,6 +164,7 @@ class OperationController extends Controller
     public function update(Request $request, string $id)
     {
         try {
+
             $operation = Operation::findorfail($id);
             if ($operation) {
                 $sumAmountPaid = Payement::where('operation_id', $id)->sum('amount_paid');
@@ -214,20 +218,28 @@ class OperationController extends Controller
      */
     public function destroy(string $id)
     {
-
-        Operation::findorfail($id)->delete();
+        $doctor_id = Auth()->id();
+        Operation::where('doctor_id', $doctor_id)->findorfail($id)->delete();
         return response()->json(['message' => 'Operation deleted successfully'], 204);
     }
     public function getByOperationId($operationId)
     {
-        $operation = Operation::where('id', $operationId)->first();
+        $doctor_id = Auth()->id();
+        $operation = Operation::where('id', $operationId)->where('doctor_id', $doctor_id)->first();
 
         // Transform the result using the resource
         return new OperationResource($operation);
     }
     public function deletePaymentDetail($id)
     {
-        Payement::findorfail($id)->delete();
-        return response()->json(['message' => 'payment deleted successfully'], 204);
+
+        $doctor_id = Auth()->id();
+
+
+        Payement::whereHas('operation', function ($query) use ($doctor_id) {
+            $query->where('doctor_id', $doctor_id);
+        })->findOrFail($id)->delete();
+
+        return response()->json(['message' => 'Payment deleted successfully'], 204);
     }
 }

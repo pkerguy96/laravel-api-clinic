@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('patients', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('doctor_id')->nullable();
             $table->string('nom');
             $table->string('prenom');
             $table->string('cin')->unique();
@@ -23,6 +24,7 @@ return new class extends Migration
             $table->string('mutuelle');
             $table->text('note')->nullable();
             $table->timestamps();
+            $table->foreign('doctor_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 

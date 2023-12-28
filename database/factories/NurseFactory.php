@@ -20,7 +20,7 @@ class NurseFactory extends Factory
     public function definition()
     {
         return [
-            'doctor_id' => $this->faker->unique()->randomNumber(5),
+            'doctor_id' => 1,
             'nom' => $this->faker->lastName,
             'prenom' => $this->faker->firstName,
             'cin' => $this->faker->unique()->ean13,

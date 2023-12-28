@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -20,13 +21,21 @@ class SetupCommand extends Command
     public function handle()
     {
         $credentials = [
-            'email' => 'admin@admin.com',
+            'email' => 'admin1@admin.com',
             'password' => 'password',
         ];
 
         if (!Auth::attempt($credentials)) {
             $user = new User();
-            $user->name = 'Admin';
+            $user->nom = 'Admin';
+            $user->prenom = 'Admin';
+            $user->cin = 'xxsx';
+            $user->address = 'Admin';
+            $user->date = Carbon::now();
+            $user->sex = 'female';
+            $user->role = 'doctor';
+            $user->phone_number = '03666666';
+
             $user->email = $credentials['email'];
             $user->password = Hash::make($credentials['password']);
             $user->save();

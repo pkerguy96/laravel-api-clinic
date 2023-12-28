@@ -9,6 +9,7 @@ class Patient extends Model
 {
     use HasFactory;
     protected $fillable = [
+        'doctor_id',
         'nom',
         'prenom',
         'cin',
@@ -30,5 +31,9 @@ class Patient extends Model
     public function operations()
     {
         return $this->hasMany(Operation::class, 'patient_id'); // Assuming 'patient_id' is the foreign key in the operations table
+    }
+    public function doctor()
+    {
+        return $this->belongsTo(User::class, 'doctor_id ');
     }
 }

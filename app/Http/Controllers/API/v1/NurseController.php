@@ -18,8 +18,8 @@ class NurseController extends Controller
      */
     public function index()
     {
-
-        return new NurseCollection(Nurse::orderby('id', 'desc')->get());
+        $doctor_id = Auth()->id();
+        return new NurseCollection(Nurse::where('doctor_id', $doctor_id)->orderby('id', 'desc')->get());
     }
 
     /**
@@ -35,6 +35,7 @@ class NurseController extends Controller
      */
     public function store(StoreNurseRequest $request)
     {
+
         $authenticatedUserId = auth()->user();
         $attributes = $request->all();
         $attributes['doctor_id'] = $authenticatedUserId->id;

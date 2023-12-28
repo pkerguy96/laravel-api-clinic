@@ -17,3 +17,6 @@ yarn-error.log
 /.fleet
 /.idea
 /.vscode
+app/Console/Commands/AssignPermissionToRole.php
+app/Console/Commands/FetchDailyQuote.php
+app/Console/Commands/SetupCommand.php
