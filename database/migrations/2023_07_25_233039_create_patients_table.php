@@ -23,6 +23,8 @@ return new class extends Migration
             $table->string('phone_number', 20)->unique();
             $table->string('mutuelle');
             $table->text('note')->nullable();
+            $table->text('p_folder')->nullable();
+
             $table->timestamps();
             $table->foreign('doctor_id')->references('id')->on('users')->onDelete('cascade');
         });

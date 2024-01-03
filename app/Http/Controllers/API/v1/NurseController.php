@@ -6,9 +6,10 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\V1\StoreNurseRequest;
 use App\Http\Resources\V1\NurseCollection;
 use App\Http\Resources\V1\NurseResource;
-use App\Models\Nurse;
-use Illuminate\Http\Request;
 
+use App\Models\User;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
 
 class NurseController extends Controller
@@ -19,7 +20,7 @@ class NurseController extends Controller
     public function index()
     {
         $doctor_id = Auth()->id();
-        return new NurseCollection(Nurse::where('doctor_id', $doctor_id)->orderby('id', 'desc')->get());
+        return new NurseCollection(User::where('doctor_id', $doctor_id)->orderby('id', 'desc')->get());
     }
 
     /**
@@ -39,12 +40,19 @@ class NurseController extends Controller
         $authenticatedUserId = auth()->user();
         $attributes = $request->all();
         $attributes['doctor_id'] = $authenticatedUserId->id;
+        $attributes['password'] = Hash::make($attributes['password']);
+        $attributes['role'] = 'nurse';
         try {
-            if ($authenticatedUserId->nurses()->count() >= 6) {
+            $nurseCount = User::where('doctor_id', $authenticatedUserId->id)
+                ->where('role', 'nurse')
+                ->count();
+
+            if ($nurseCount >= 6) {
                 return response()->json(['message' => "Vous ne pouvez avoir que jusqu'à six infirmières."], 400);
             }
+
             // Attempt to create a new patient based on the validated request data
-            $data = new NurseResource(Nurse::create($attributes));
+            $data = new NurseResource(User::create($attributes));
 
             // If the patient is successfully created, return a success response
             return response()->json([

@@ -55,10 +55,4 @@ class StoreNurseRequest extends FormRequest
 
         ];
     }
-    public function prepareForValidation()
-    {
-        $this->merge([
-            'phone_number' => $this->phoneNumber
-        ]);
-    }
 }

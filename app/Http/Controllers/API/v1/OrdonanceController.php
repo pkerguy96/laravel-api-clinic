@@ -13,6 +13,7 @@ use App\Traits\HttpResponses;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use PhpParser\Node\Stmt\TryCatch;
 
 class OrdonanceController extends Controller
@@ -77,7 +78,7 @@ class OrdonanceController extends Controller
         } catch (\Exception $e) {
             // Rollback the transaction in case of an error
             DB::rollBack();
-
+            Log::error($e);
             // Return an error response
             return response()->json([
                 'message' => 'Error creating Ordonance',

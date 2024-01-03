@@ -21,7 +21,7 @@ class SetupCommand extends Command
     public function handle()
     {
         $credentials = [
-            'email' => 'admin1@admin.com',
+            'email' => 'admin@admin.com',
             'password' => 'password',
         ];
 

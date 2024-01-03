@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('doctor_id')->nullable();
             $table->string('nom');
             $table->string('prenom');
             $table->string('cin')->unique();;
@@ -27,6 +28,7 @@ return new class extends Migration
             $table->string('profile_picture')->nullable();
             $table->rememberToken();
             $table->timestamps();
+            $table->foreign('doctor_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 
